@@ -1,0 +1,22 @@
+# Data and results (standard input, module outputs, simulated example)
+input/
+results/
+example/input/
+example/input_null/
+example/truth/
+example/results/
+example/results_null/
+example/results_reference/
+example/roundtrip/
+example/validation_report.xlsx
+
+# R data and outputs anywhere else
+*.rds
+*.RData
+*.Rhistory
+.Rproj.user/
+*.pdf
+*.xlsx
+
+# macOS
+.DS_Store
