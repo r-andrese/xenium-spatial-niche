@@ -1,0 +1,45 @@
+# Runs the simulated example end to end and fails if any of the validation
+# checks in example/validate_example.R fails.
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: System libraries
+        run: sudo apt-get update && sudo apt-get install -y libhdf5-dev libglpk-dev
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true   # binary CRAN packages on Ubuntu
+
+      - name: R packages
+        run: |
+          Rscript -e 'pkgs <- c("Matrix", "igraph", "dbscan", "ggplot2", "openxlsx", "hdf5r", "SeuratObject")
+                      install.packages(pkgs, Ncpus = 2)
+                      miss <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+                      if (length(miss)) stop("failed to install: ", paste(miss, collapse = ", "))'
+
+      - name: Simulate example data
+        run: Rscript example/simulate_example.R
+
+      - name: Run all modules and check against the known truth
+        run: Rscript example/validate_example.R
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: example/validation_report.xlsx
+          if-no-files-found: ignore

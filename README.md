@@ -1,12 +1,30 @@
 # xenium-spatial-niche
 
+[![Validation](https://github.com/r-andrese/xenium-spatial-niche/actions/workflows/validate.yml/badge.svg)](https://github.com/r-andrese/xenium-spatial-niche/actions/workflows/validate.yml)
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
+
 Tests whether labelled cell populations are found in each other's local
 neighbourhoods more often than tissue architecture alone would predict, 
 using the section (sample) as the unit of inference. The toolkit was developed on 10x
 Genomics Xenium data, but the analyses require only cell centroids in
 micrometres, a cell label and, for two modules, a counts matrix. It
 therefore applies equally to CosMx, MERSCOPE and other single-cell-resolution
-spatial platforms once the data are formatted according to the standard input described below
+spatial platforms once the data are formatted according to the standard input described below.
+
+## Quick start
+
+The toolkit can be tried with synthetic data: A simulator writes
+two cohorts with known ground truth, and a validation script runs every
+module and checks the expected results (see
+[Example and validation](#example-and-validation)):
+
+```bash
+git clone https://github.com/r-andrese/xenium-spatial-niche.git
+cd xenium-spatial-niche
+Rscript -e 'install.packages(c("Matrix", "igraph", "dbscan", "ggplot2", "openxlsx", "hdf5r", "SeuratObject"))'
+Rscript example/simulate_example.R    # about 15 s
+Rscript example/validate_example.R    # about 10 min; writes example/validation_report.xlsx
+```
 
 ## Purpose
 
@@ -103,6 +121,21 @@ neighbour compartment. **A matched scRNA-seq reference is preferred** as referen
   read)
 - Import from Seurat: SeuratObject (>= 5); Seurat itself is not needed
 
+## Installation
+
+Clone the repository and install the packages from CRAN:
+
+```r
+install.packages(c("Matrix", "igraph", "dbscan", "ggplot2", "openxlsx"))
+# Optional, depending on the import route:
+install.packages("hdf5r")         # Xenium Ranger cell_feature_matrix.h5 (needs the system HDF5 library)
+install.packages("arrow")         # Xenium Ranger cells.parquet
+install.packages("SeuratObject")  # import from a Seurat object
+```
+
+On Debian/Ubuntu the HDF5 library is installed with
+`sudo apt-get install libhdf5-dev`; on macOS with `brew install hdf5`.
+
 ## Inputs
 
 Modules 01-05 read only the standard input, which the two import scripts
@@ -147,7 +180,7 @@ matched to the sample column by cell name, and count layers split by
 **To obtain it:** objects built with `LoadXenium()` store centroids in
 micrometres, so `COORD_SCALE <- 1`. For any other object, run the import and 
 check the reported section width, height, and median nearest-neighbour distance 
-for each sample; these are also saved in `input/00_import_report.xlsx`). The width and
+for each sample (these are also saved in `input/00_import_report.xlsx`). The width and
 height should match the physical section size, and the nearest-neighbour distance
 should be roughly a cell diameter (about 5-20 um in solid tissue).
 A value in the hundreds or thousands means the coordinates are pixels: set
@@ -274,7 +307,7 @@ module on simulated data with known truth:
 
 ```
 Rscript example/simulate_example.R    # about 15 s
-Rscript example/validate_example.R    # about 8 min
+Rscript example/validate_example.R    # about 10 min
 ```
 
 The simulation has two cohorts of 12 samples (2 x 2 mm, about 3,500 cells per
@@ -347,6 +380,23 @@ B3 rows rise because the readout is compositional (see Interpretation):
   (2024).
 - Hodges-Lehmann estimator: Hodges JL, Lehmann EL. Estimates of location
   based on rank tests. Ann Math Stat 34, 598-611 (1963).
+
+## How to cite
+
+There is no accompanying publication yet. If you use this toolkit, please
+cite the software:
+
+> Andres Ejarque R. *xenium-spatial-niche: permutation-based analysis of
+> cell-state co-localisation and spatial niches in single-cell-resolution
+> spatial transcriptomics* (version 1.0.0). 2026.
+> https://github.com/r-andrese/xenium-spatial-niche
+
+## Author and contact
+
+Rosa Andres Ejarque, King's College London.
+
+Questions, bug reports and suggestions are welcome as
+[GitHub issues](https://github.com/r-andrese/xenium-spatial-niche/issues).
 
 ## Licence
 

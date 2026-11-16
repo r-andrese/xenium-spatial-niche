@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "xenium-spatial-niche: permutation-based analysis of cell-state co-localisation and spatial niches in single-cell-resolution spatial transcriptomics"
+abstract: >-
+  R toolkit that tests whether labelled cell populations are found in each
+  other's local neighbourhoods more often than tissue architecture alone would
+  predict, using within-compartment permutation nulls restricted to connected
+  tissue components and the section as the unit of inference. Modules cover
+  tissue geometry QC, co-localisation, distance decay, depth-stratified
+  exposure contrasts and neighbourhood-associated genes with a segmentation
+  spillover filter.
+authors:
+  - family-names: "Andres Ejarque"
+    given-names: "Rosa"
+    orcid: "https://orcid.org/0000-0003-0012-1155"
+    affiliation: "King's College London"
+version: "1.0.0"
+date-released: "2026-11-16"
+license: MIT
+repository-code: "https://github.com/r-andrese/xenium-spatial-niche"
+keywords:
+  - spatial transcriptomics
+  - Xenium
+  - single-cell
+  - cell-cell co-localisation
+  - permutation test
+  - R
